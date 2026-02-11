@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferramenta do Vendedor - Substituir DNS</title>
+    <title>Editor de DNS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -25,7 +25,7 @@
         /* Header */
         .header {
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -65,12 +65,13 @@
             max-width: 450px;
             height: 1px;
             background: #333;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         h1 {
             font-size: 24px;
             margin-bottom: 25px;
+            font-weight: 600;
         }
 
         /* Card DNS */
@@ -104,6 +105,7 @@
             font-size: 16px;
             background: white;
             color: black;
+            outline: none;
         }
 
         .trash-icon {
@@ -111,7 +113,7 @@
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #666;
+            color: #ff3131;
             cursor: pointer;
             font-size: 18px;
         }
@@ -126,49 +128,15 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.3s ease;
+        }
+
+        .btn-copy:active {
+            transform: scale(0.98);
         }
 
         .btn-copy.copiado {
             background-color: #28a745;
-        }
-
-        /* Apps Section */
-        .apps-section {
-            margin-top: 10px;
-            text-align: center;
-            width: 100%;
-            max-width: 450px;
-        }
-
-        .apps-title {
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        .apps-grid {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
-        }
-
-        .app-link {
-            text-decoration: none;
-            transition: transform 0.2s;
-        }
-
-        .app-link:hover {
-            transform: scale(1.05);
-        }
-
-        .app-img {
-            width: 70px; /* Tamanho ajustado para caber 5 em linha em telas comuns */
-            height: 70px;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 1px solid #333;
         }
 
         /* Bloco de Notas */
@@ -181,18 +149,28 @@
         .notepad-title {
             font-size: 20px;
             margin-bottom: 15px;
+            font-weight: 500;
         }
 
         textarea {
             width: 100%;
-            height: 250px;
+            height: 300px;
             padding: 20px;
-            border-radius: 4px;
+            border-radius: 8px;
             border: none;
             resize: none;
-            font-size: 15px;
-            color: #555;
+            font-size: 16px;
+            color: #333;
             background-color: white;
+            line-height: 1.5;
+            outline: none;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .header, .card-dns, .notepad-section {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -203,7 +181,7 @@
             Ferramenta
             <span>Do Vendedor</span>
         </div>
-        <a href="https://wa.me/SEUNUMERO" target="_blank" class="btn-suporte">
+        <a href="#" class="btn-suporte">
             <i class="fab fa-whatsapp"></i> Suporte
         </a>
     </header>
@@ -215,7 +193,7 @@
     <div class="card-dns">
         <label>Insira seu DNS:</label>
         <div class="input-group">
-            <input type="text" id="dominioPadrao" oninput="salvarDominio()" placeholder="http://xcofe.site">
+            <input type="text" id="dominioPadrao" oninput="salvarDominio()" placeholder="http://">
         </div>
 
         <label>Cole a Playlist original:</label>
@@ -226,21 +204,10 @@
 
         <label>Playlist com DNS substituído:</label>
         <div class="input-group">
-            <input type="text" id="linkModificado" readonly>
+            <input type="text" id="linkModificado" readonly placeholder="Resultado">
         </div>
 
         <button class="btn-copy" id="copiarBotao" onclick="copiarLink()">Copiar Link</button>
-    </div>
-
-    <div class="apps-section">
-        <p class="apps-title">Clique no app para inserir a Playlist</p>
-        <div class="apps-grid">
-            <a href="https://iboproapp.com/manage-playlists/login/?callback_url=%2Fmanage-playlists%2Flist" class="app-link"><img src="https://i.ibb.co/j9sDWqxc/Ibo-Player-Pro.png" alt="IBO" class="app-img"></a>
-            <a href="https://lazerplay.io/#/upload-playlist" class="app-link"><img src="https://i.ibb.co/PBZ47Zw/Lazer-Play.png" alt="Lazer" class="app-img"></a>
-            <a href="https://vuplayer.pro/login" class="app-link"><img src="https://i.ibb.co/QjFRJrXZ/VU-Player-Pro.png" alt="VU" class="app-img"></a>
-            <a href="https://iboiptv.com/device/login" class="app-link"><img src="https://i.ibb.co/WpBsMD1b/Ibo-Player.jpg" alt="ProID" class="app-img"></a>
-            <a href="https://bobplayer.com/login" class="app-link"><img src="https://i.ibb.co/4wT0kbRV/Bob-Player.png" alt="Bob" class="app-img"></a>
-        </div>
     </div>
 
     <div class="notepad-section">
@@ -249,20 +216,27 @@
     </div>
 
     <script>
-        // Lógica de Salvamento e Substituição
+        // Inicialização e Recuperação de Dados
         document.addEventListener("DOMContentLoaded", function () {
-            if (localStorage.getItem("dominioPadrao")) {
-                document.getElementById("dominioPadrao").value = localStorage.getItem("dominioPadrao");
+            const savedDNS = localStorage.getItem("dominioPadrao");
+            const savedNote = localStorage.getItem("note");
+
+            if (savedDNS) {
+                document.getElementById("dominioPadrao").value = savedDNS;
             }
-            document.getElementById("note").value = localStorage.getItem("note") || "";
+            if (savedNote) {
+                document.getElementById("note").value = savedNote;
+            }
         });
 
+        // Salvar DNS e processar substituição
         function salvarDominio() {
             let dominio = document.getElementById("dominioPadrao").value.trim();
             localStorage.setItem("dominioPadrao", dominio);
             substituirDominio();
         }
 
+        // Lógica de substituição de domínio
         function substituirDominio() {
             let linkOriginal = document.getElementById("linkOriginal").value.trim();
             let novoDominio = document.getElementById("dominioPadrao").value.trim();
@@ -273,23 +247,33 @@
             }
 
             try {
-                let url = new URL(linkOriginal);
-                let novoLink = novoDominio + url.pathname + url.search + url.hash;
-                document.getElementById("linkModificado").value = novoLink;
+                // Tenta tratar como uma URL válida
+                if (linkOriginal.includes("://")) {
+                    let url = new URL(linkOriginal);
+                    // Garante que o novo domínio tenha o protocolo
+                    let prefixo = novoDominio.includes("://") ? "" : "http://";
+                    let novoLink = (prefixo + novoDominio).replace(/\/+$/, '') + url.pathname + url.search + url.hash;
+                    document.getElementById("linkModificado").value = novoLink;
+                } else {
+                    document.getElementById("linkModificado").value = "Link inválido";
+                }
             } catch (error) {
-                if(linkOriginal.includes("://")) {
-                    let parts = linkOriginal.split('/');
+                // Fallback para substituição manual básica se a URL API falhar
+                let parts = linkOriginal.split('/');
+                if (parts.length >= 3) {
                     parts[2] = novoDominio.replace('http://', '').replace('https://', '');
                     document.getElementById("linkModificado").value = parts.join('/');
                 }
             }
         }
 
+        // Copiar para a área de transferência
         function copiarLink() {
             let linkModificado = document.getElementById("linkModificado");
-            if (!linkModificado.value) return;
+            if (!linkModificado.value || linkModificado.value === "Link inválido") return;
 
             linkModificado.select();
+            linkModificado.setSelectionRange(0, 99999); // Para dispositivos móveis
             document.execCommand("copy");
             
             let botao = document.querySelector("#copiarBotao");
@@ -302,11 +286,13 @@
             }, 2000);
         }
 
+        // Limpar campos
         function limparCampo() {
             document.getElementById("linkOriginal").value = "";
             document.getElementById("linkModificado").value = "";
         }
 
+        // Salvar nota automaticamente
         document.getElementById("note").addEventListener("input", function() {
             localStorage.setItem("note", this.value);
         });
